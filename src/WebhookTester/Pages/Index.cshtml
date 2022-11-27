@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id?}"
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -8,3 +8,29 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+@{
+    var i = 0; 
+}
+@if (Model.Id != default)
+{
+    <p>
+        WebhookSessionId: @Model.NewSession.WebhookSessionId
+        @foreach (var r in Model.NewSession.CallRequests)
+        {
+        <p>@(++i) - @r.RequestBody</p>
+        <table>
+            <tr>
+                <th>Header</th>
+                <th>Value</th>
+            </tr>
+                @foreach (var item in r.Headers)
+                {
+                <tr>
+                    <td>@item.Key</td>
+                    <td>@(string.Join(',', item.Value))</td>
+                </tr>
+                }
+        </table>
+        }
+    </p>
+}

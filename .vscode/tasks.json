@@ -36,6 +36,24 @@
                 "${workspaceFolder}/src/WebhookTester/WebhookTester.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "check-env (oakton)",
+            "command": "dotnet",
+            "type": "process",
+            "options": {
+                "env": {
+                    "ASPNETCORE_ENVIRONMENT": "Debug"
+                }
+            },
+            "args": [
+                "run",
+                "--project",
+                "${workspaceFolder}/src/WebhookTester/WebhookTester.csproj",
+                "--",
+                "check-env"
+            ],
+            "problemMatcher": "$msCompile"
         }
     ]
 }

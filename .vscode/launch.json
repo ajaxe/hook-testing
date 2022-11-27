@@ -18,7 +18,7 @@
             "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
         },
         "env": {
-            "ASPNETCORE_ENVIRONMENT": "Debug",
+            "ASPNETCORE_ENVIRONMENT": "Development",
             "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
         },
         "sourceFileMap": {
