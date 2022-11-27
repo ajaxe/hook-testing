@@ -50,6 +50,7 @@ internal class CallbackProcessor : ICallbackProcessor
             Headers = callback.Headers,
             RequestBody = callback.RequestBody,
             WebhookSessionId = webhookSession.Id,
+            ReceivedDate = DateTime.UtcNow
         };
 
         storeSession.Store(callbackModel);

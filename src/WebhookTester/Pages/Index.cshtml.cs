@@ -20,19 +20,4 @@ public class IndexModel : PageModel
     public Guid Id { get; set; }
 
     public WebhookSessionView NewSession { get; set; }
-
-    public async Task<IActionResult> OnGetAsync()
-    {
-        if (Id == default)
-        {
-            NewSession = await _sessionService.GetWebhookSession();
-            return Redirect($"/{NewSession.WebhookSessionId}");
-        }
-        else
-        {
-            NewSession = await _sessionService.GetWebhookSession(Id);
-        }
-
-        return Page();
-    }
 }
