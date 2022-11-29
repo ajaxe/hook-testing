@@ -18,4 +18,12 @@ $(function () {
       $target.removeClass("text-success copy-fadeout").addClass("text-primary");
     }, 7000);
   });
+
+  $("#callback-list").find("li:first-child").addClass("active");
+  $("#callback-list")
+    .find("li")
+    .on("click", function () {
+      $(this).parent().find(".active").removeClass("active");
+      $(this).addClass("active");
+    });
 });

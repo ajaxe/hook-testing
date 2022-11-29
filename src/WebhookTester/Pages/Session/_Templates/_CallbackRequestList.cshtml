@@ -6,12 +6,15 @@
 }
 else
 {
-    <ul class="list-group list-group-flush">
-        @foreach (var item in Model)
+    <ul class="list-group list-group-flush" id="callback-list">
+        @for (var i = 0; i < Model.Count; i++)
         {
-            <li class="list-group-item">
+            var item = Model[i];
+            @*client side js sets first element as 'active'*@
+            <li class="list-group-item list-group-item-action" hx-get hx-page="/Session/Index" hx-page-handler="Callback"
+        hx-route-callbackId="@item.Id" hx-target="#callback-detail">
                 <span class="badge text-bg-primary">@item.RequestMethod</span>
-                #@displayId(item.Id)&nbsp;<br>
+                #@displayId(item.Id)<br>
                 @item.ReceivedDate
             </li>
         }

@@ -1,5 +1,7 @@
 ﻿using ApogeeDev.WebhookTester.AppService;
+using ApogeeDev.WebhookTester.Common.Models;
 using ApogeeDev.WebhookTester.Common.ViewModels;
+using Htmx;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -34,5 +36,20 @@ public class IndexModel : PageModel
         }
 
         return Page();
+    }
+
+    public async Task<IActionResult> OnGetCallbackAsync(Guid callbackId)
+    {
+        if (Request.IsHtmx())
+        {
+            CallbackRequestModel? callback = await _sessionService.GetCallback(callbackId);
+
+            if (callback is null)
+            {
+                return Partial("_Templates/_CallbackNotFound");
+            }
+            return Partial("_Templates/_CallbackRequestDetail", callback);
+        }
+        return RedirectToPage();
     }
 }

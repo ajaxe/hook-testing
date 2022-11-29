@@ -1,4 +1,7 @@
 @model ApogeeDev.WebhookTester.Common.Models.CallbackRequestModel
+@{
+    Layout = "";
+}
 
 <div class="card">
     <div class="card-body">
@@ -8,7 +11,7 @@
             <colgroup>
                 <col span="1" style="font-weight: bold;" />
             </colgroup>
-            @foreach (var item in Model.Headers)
+                @foreach (var item in Model.Headers)
                 {
                 <tr>
                     <td>@item.Key</td>
