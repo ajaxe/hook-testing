@@ -30,8 +30,21 @@ internal class WebhookSessionService : IWebhookSessionService
         var querySession = store.QuerySession();
 
         var callback = await querySession.Query<CallbackRequestModel>()
-        .Where(q => q.Id == callbackId)
-        .FirstOrDefaultAsync();
+            .Where(q => q.Id == callbackId)
+            .FirstOrDefaultAsync();
+
+        return PrepareCallbackModel(callback);
+    }
+
+    private CallbackRequestModel? PrepareCallbackModel(CallbackRequestModel? callback)
+    {
+        if (callback is null)
+        {
+            return callback;
+        }
+
+        callback.Headers = callback.Headers.Where(kvp => !kvp.Key.ToLower().StartsWith("x-forwarded-"))
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
         return callback;
     }
@@ -88,7 +101,7 @@ internal class WebhookSessionService : IWebhookSessionService
             StartDate = webhookSession.StartDate,
             WebhookSessionId = webhookSession.Id,
             CallRequests = callbacks,
-            MostRecentCallback = latestCallback
+            MostRecentCallback = PrepareCallbackModel(latestCallback)
         };
     }
 }
