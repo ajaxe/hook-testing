@@ -2,3 +2,20 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+$(function () {
+  $("[data-urlpart]").on("click", function () {
+    let $target = $(this);
+    console.log($target.data("urlpart"));
+    let $icon = $target.find("i.bi");
+    let orignalCss = $icon.attr("class");
+    let effectCss = "bi bi-check-lg fw-semibold";
+    $icon.removeClass(orignalCss).addClass(effectCss);
+    $target.removeClass("text-primary").addClass("text-success copy-fadeout");
+    let urlpart = $target.data("urlpart");
+    navigator.clipboard.writeText([location.origin, urlpart].join("/"));
+    setTimeout(function () {
+      $icon.removeClass(effectCss).addClass(orignalCss);
+      $target.removeClass("text-success copy-fadeout").addClass("text-primary");
+    }, 7000);
+  });
+});

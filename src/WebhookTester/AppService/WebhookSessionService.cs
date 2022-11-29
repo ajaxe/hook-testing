@@ -20,10 +20,11 @@ internal class WebhookSessionService : IWebhookSessionService
         this.logger = logger;
     }
 
-    public async Task<WebhookSessionView> GetWebhookSession(Guid webhookSessionId = default)
+    public async Task<WebhookSessionView?> GetWebhookSession(Guid webhookSessionId = default)
     {
         WebhookSession webhookSession;
-        List<CallbackRequestModel> callbacks;
+        List<CallbackRequestListItem> callbacks;
+        CallbackRequestModel? latestCallback = null;
 
         using var storeSession = await store.OpenSessionAsync(new Marten.Services.SessionOptions());
 
@@ -40,24 +41,38 @@ internal class WebhookSessionService : IWebhookSessionService
             storeSession.Store(webhookSession);
             await storeSession.SaveChangesAsync();
 
-            callbacks = new List<CallbackRequestModel>();
+            callbacks = new List<CallbackRequestListItem>();
         }
         else
         {
             webhookSession = await storeSession.LoadAsync<WebhookSession>(webhookSessionId);
 
+            if (webhookSession is null)
+            {
+                return null;
+            }
+
             var results = await storeSession.Query<CallbackRequestModel>()
             .Where(q => q.WebhookSessionId == webhookSessionId)
+            .OrderByDescending(q => q.ReceivedDate)
             .ToListAsync();
 
-            callbacks = results.ToList();
+            callbacks = results
+                .Select(r => new CallbackRequestListItem
+                {
+                    Id = r.Id,
+                    ReceivedDate = r.ReceivedDate,
+                }).ToList();
+
+            latestCallback = results.FirstOrDefault();
         }
 
         return new WebhookSessionView
         {
             StartDate = webhookSession.StartDate,
             WebhookSessionId = webhookSession.Id,
-            CallRequests = callbacks
+            CallRequests = callbacks,
+            MostRecentCallback = latestCallback
         };
     }
 }

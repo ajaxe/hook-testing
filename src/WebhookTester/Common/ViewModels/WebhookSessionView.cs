@@ -6,14 +6,15 @@ public class WebhookSessionView
 {
     public WebhookSessionView()
     {
-        CallRequests = new List<CallbackRequestModel>();
+        CallRequests = new List<CallbackRequestListItem>();
         StartDate = DateTime.UtcNow;
     }
 
     public DateTime StartDate { get; set; }
     public Guid WebhookSessionId { get; set; }
     public string CallbackUrl => $"/callback/{WebhookSessionId}";
-    public List<CallbackRequestModel> CallRequests { get; set; }
+    public List<CallbackRequestListItem> CallRequests { get; set; }
+    public CallbackRequestModel? MostRecentCallback { get; set; }
 
     public static WebhookSessionView Empty { get; } = new WebhookSessionView();
 }
