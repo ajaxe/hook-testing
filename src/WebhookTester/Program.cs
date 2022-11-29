@@ -5,13 +5,15 @@ using Marten.Schema.Identity;
 using Oakton;
 using Weasel.Core;
 
+const string EnvVarPrefix = "APP_";
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.ApplyOaktonExtensions();
 
 builder.Configuration
     .AddJsonFile($"secrets.{builder.Environment.EnvironmentName}.json", optional: true)
-    .AddEnvironmentVariables(prefix: "APP_");
+    .AddEnvironmentVariables(prefix: EnvVarPrefix);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -44,6 +46,17 @@ builder.Services.AddMarten(options =>
 
 var app = builder.Build();
 
+string appPrefix = Environment.GetEnvironmentVariable($"{EnvVarPrefix}AppPathPrefix") ?? string.Empty;
+
+if (!string.IsNullOrWhiteSpace(appPrefix))
+{
+    app.Use((context, next) =>
+    {
+        context.Request.PathBase = appPrefix;
+        return next();
+    });
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -52,11 +65,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// using reverse proxy for SSL termination
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 //app.UseAuthorization();
 
 app.MapRazorPages();
