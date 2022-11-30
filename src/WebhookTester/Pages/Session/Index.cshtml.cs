@@ -1,4 +1,5 @@
-﻿using ApogeeDev.WebhookTester.AppService;
+﻿using ApogeeDev.WebhookTester.Abstractions;
+using ApogeeDev.WebhookTester.AppService;
 using ApogeeDev.WebhookTester.Common.Models;
 using ApogeeDev.WebhookTester.Common.ViewModels;
 using Htmx;
@@ -51,5 +52,20 @@ public class IndexModel : PageModel
             return Partial("_Templates/_CallbackRequestDetail", callback);
         }
         return RedirectToPage();
+    }
+
+    public Task<IActionResult> OnPostSaveUserSessionAsync(bool save)
+    {
+        IActionResult result = null;
+        if (Request.IsHtmx())
+        {
+            //_sessionService.SaveWebhookSessionToUser(Id);
+            result = Partial("_Templates/_SessionSaveStatus", save);
+        }
+        else
+        {
+            result = RedirectToPage();
+        }
+        return Task.FromResult(result);
     }
 }

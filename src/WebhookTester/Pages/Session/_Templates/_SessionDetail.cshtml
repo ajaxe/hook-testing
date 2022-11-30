@@ -2,7 +2,13 @@
 
 <div class="card mb-3">
     <div class="card-body">
-        <h5 class="card-title">Session details</h5>
+        <div class="card-title">
+            <div class="h5 d-inline">Session details</div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <partial name="_Templates/_SessionSaveStatus" model="@true" />
+            }
+        </div>
         <p class="card-text">
             <span class="fw-semibold">Session Id:</span> @Model.WebhookSessionId <button type="button"
                 class="btn btn-outline text-primary" data-urlpart="session/@Model.WebhookSessionId"><i
