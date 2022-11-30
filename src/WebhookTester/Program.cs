@@ -1,4 +1,6 @@
+using ApogeeDev.WebhookTester;
 using ApogeeDev.WebhookTester.AppService;
+using ApogeeDev.WebhookTester.Common.Configuration;
 using ApogeeDev.WebhookTester.Common.Models;
 using Marten;
 using Marten.Schema.Identity;
@@ -11,16 +13,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.ApplyOaktonExtensions();
 
+builder.Services.AddOptions();
 builder.Configuration
     .AddJsonFile($"secrets.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables(prefix: EnvVarPrefix);
 
+var appOptions = new AppOptions();
+builder.Configuration.GetSection(AppOptions.SectionName).Bind(appOptions);
+
 // Add services to the container.
-builder.Services.AddRazorPages();
-
-builder.Services.AddTransient<IWebhookSessionService, WebhookSessionService>();
-builder.Services.AddTransient<ICallbackProcessor, CallbackProcessor>();
-
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeFolder("/User");
+});
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddMarten(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("MainStore");
@@ -43,6 +49,10 @@ builder.Services.AddMarten(options =>
         typeof(CallbackRequestModel) });
 })
 .OptimizeArtifactWorkflow();
+
+StartupInitializers.ConfigureInjectableServices(builder.Services);
+
+StartupInitializers.ConfigureGoogleAuth(builder.Services, appOptions);
 
 var app = builder.Build();
 
@@ -70,7 +80,8 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorPages();
 

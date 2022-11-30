@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth.AspNetCore3" Version="1.57.0" />
     <PackageReference Include="Htmx" Version="1.0.1" />
     <PackageReference Include="Htmx.TagHelpers" Version="1.0.1" />
     <PackageReference Include="Marten" Version="5.11.0" />

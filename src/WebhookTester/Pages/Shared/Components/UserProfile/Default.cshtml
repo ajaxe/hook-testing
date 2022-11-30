@@ -1,0 +1,23 @@
+@model ApogeeDev.WebhookTester.Common.ViewModels.UserProfile
+
+<div class="align-self-center">
+    <div class="d-inline-block shadow-lg dropdown rounded-pill">
+        <button class="dropdown-toggle rounded-pill" id="avatar-btn" data-bs-toggle="dropdown" aria-expanded="false">
+            <img width="64px" class="img-thumbnail rounded-pill " src="@Model.ProfileImageUrl" title="@Model.Name" />
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatar">
+            <li>
+                <p class="text-center px-4">
+                    <span class="lead">@Model.Name</span><br>
+                    <span>@Model.Email</span>
+                </p>
+            </li>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li class="text-center">
+                <a class="btn btn-outline-secondary w-75" asp-page="LoginHandler" asp-page-handler="Logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+</div>
