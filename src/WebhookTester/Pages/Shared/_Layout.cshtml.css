@@ -47,14 +47,3 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
-.copy-fadeout {
-  animation: 4s linear 0s 1 normal forwards running fadeOut;
-}
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}

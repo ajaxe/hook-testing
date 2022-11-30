@@ -3,7 +3,8 @@
 <div class="align-self-center">
     <div class="d-inline-block shadow-lg dropdown rounded-pill">
         <button class="dropdown-toggle rounded-pill" id="avatar-btn" data-bs-toggle="dropdown" aria-expanded="false">
-            <img width="64px" class="img-thumbnail rounded-pill " src="@Model.ProfileImageUrl" title="@Model.Name" />
+            <img width="48px" class="img-thumbnail rounded-pill " src="@Model.ProfileImageUrl" title="@Model.Name"
+                referrerpolicy="no-referrer" />
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatar">
             <li>
@@ -16,7 +17,7 @@
                 <hr class="dropdown-divider">
             </li>
             <li class="text-center">
-                <a class="btn btn-outline-secondary w-75" asp-page="LoginHandler" asp-page-handler="Logout">Logout</a>
+                <a class="btn btn-outline-secondary w-75" asp-page="/LoginHandler" asp-page-handler="Logout">Logout</a>
             </li>
         </ul>
     </div>

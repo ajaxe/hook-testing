@@ -16,7 +16,7 @@ $(function () {
     setTimeout(function () {
       $icon.removeClass(effectCss).addClass(orignalCss);
       $target.removeClass("text-success copy-fadeout").addClass("text-primary");
-    }, 7000);
+    }, 2000);
   });
 
   $("#callback-list").find("li:first-child").addClass("active");

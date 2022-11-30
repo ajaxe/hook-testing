@@ -25,7 +25,7 @@
                 {
                     <div class="d-flex" role="auth">
                         <div id="g_id_onload" data-client_id="@Configuration["AppOptions:GoogleClientId"]"
-                        data-auto_select="false" data-login_uri="@Url.PageLink(pageName: "LoginHandler", pageHandler: "GoogleSignIn",
+                        data-auto_select="false" data-login_uri="@Url.PageLink(pageName: "/LoginHandler", pageHandler: "GoogleSignIn",
                         values: new { currentPage = Accessor.HttpContext.Request.Path })">
                         </div>
                         <div class="g_id_signin" data-type="standard" data-size="medium" data-theme="outline"
