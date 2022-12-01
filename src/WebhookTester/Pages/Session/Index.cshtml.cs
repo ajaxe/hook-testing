@@ -54,18 +54,25 @@ public class IndexModel : PageModel
         return RedirectToPage();
     }
 
-    public Task<IActionResult> OnPostSaveUserSessionAsync(bool save)
+    public async Task<IActionResult> OnPostSaveUserSessionAsync(bool save)
     {
         IActionResult result = null;
         if (Request.IsHtmx())
         {
-            //_sessionService.SaveWebhookSessionToUser(Id);
+            if (save)
+            {
+                await _sessionService.AssignWebhookSessionToCurrentUser(Id);
+            }
+            else
+            {
+                await _sessionService.RemoveWebhookSessionToCurrentUser(Id);
+            }
             result = Partial("_Templates/_SessionSaveStatus", save);
         }
         else
         {
             result = RedirectToPage();
         }
-        return Task.FromResult(result);
+        return result;
     }
 }

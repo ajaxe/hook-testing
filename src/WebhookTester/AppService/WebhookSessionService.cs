@@ -1,3 +1,4 @@
+using ApogeeDev.WebhookTester.Abstractions;
 using ApogeeDev.WebhookTester.Common.Models;
 using ApogeeDev.WebhookTester.Common.ViewModels;
 using Marten;
@@ -8,16 +9,21 @@ public interface IWebhookSessionService
 {
     Task<CallbackRequestModel?> GetCallback(Guid callbackId);
     Task<WebhookSessionView> GetWebhookSession(Guid webhookSessionId = default);
+    Task AssignWebhookSessionToCurrentUser(Guid webhookSessionId);
+    Task RemoveWebhookSessionToCurrentUser(Guid webhookSessionId);
 }
 
 internal class WebhookSessionService : IWebhookSessionService
 {
     private readonly IDocumentStore store;
+    private readonly IUserInfoProvider userInfo;
     private readonly ILogger<WebhookSessionService> logger;
 
-    public WebhookSessionService(IDocumentStore store, ILogger<WebhookSessionService> logger)
+    public WebhookSessionService(IDocumentStore store,
+        IUserInfoProvider userInfo, ILogger<WebhookSessionService> logger)
     {
         this.store = store;
+        this.userInfo = userInfo;
         this.logger = logger;
     }
 
@@ -101,7 +107,65 @@ internal class WebhookSessionService : IWebhookSessionService
             StartDate = webhookSession.StartDate,
             WebhookSessionId = webhookSession.Id,
             CallRequests = callbacks,
-            MostRecentCallback = PrepareCallbackModel(latestCallback)
+            MostRecentCallback = PrepareCallbackModel(latestCallback),
+            UserIdentifier = webhookSession?.UserIdentifier,
         };
+    }
+
+    public async Task AssignWebhookSessionToCurrentUser(Guid webhookSessionId)
+    {
+        await UpdateWebhookSessionForCurrentUser(webhookSessionId, setUser: true);
+    }
+    public async Task RemoveWebhookSessionToCurrentUser(Guid webhookSessionId)
+    {
+        await UpdateWebhookSessionForCurrentUser(webhookSessionId, setUser: false);
+    }
+    private async Task UpdateWebhookSessionForCurrentUser(Guid webhookSessionId, bool setUser)
+    {
+        if (webhookSessionId == default)
+        {
+            return;
+        }
+
+        var currentUser = userInfo.GetUserProfile();
+
+        if (currentUser is null)
+        {
+            logger.LogWarning("Invalid current user information, cannot save @{WebhookSessionId}",
+                webhookSessionId);
+            return;
+        }
+
+        using var storeSession = await store.OpenSessionAsync(new Marten.Services.SessionOptions());
+
+        var existing = await storeSession.Query<WebhookSession>()
+        .Where(q => q.Id == webhookSessionId)
+        .FirstOrDefaultAsync();
+
+        if (existing is null)
+        {
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(existing.UserIdentifier)
+            && existing.UserIdentifier != currentUser.UserIdentifier)
+        {
+            logger.LogWarning("@{WebhookSessionId} is already assigned to @{User}, @{CurrentUser}",
+                webhookSessionId, existing.UserIdentifier, currentUser.UserIdentifier);
+            return;
+        }
+
+        if (setUser)
+        {
+            existing.UserIdentifier = currentUser.UserIdentifier;
+        }
+        else
+        {
+            existing.UserIdentifier = null;
+        }
+
+        storeSession.Store(existing);
+
+        await storeSession.SaveChangesAsync();
     }
 }

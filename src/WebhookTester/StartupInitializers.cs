@@ -1,5 +1,7 @@
+using ApogeeDev.WebhookTester.Abstractions;
 using ApogeeDev.WebhookTester.AppService;
 using ApogeeDev.WebhookTester.Common.Configuration;
+using ApogeeDev.WebhookTester.Providers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ApogeeDev.WebhookTester;
@@ -31,5 +33,6 @@ public static class StartupInitializers
     {
         services.AddTransient<IWebhookSessionService, WebhookSessionService>();
         services.AddTransient<ICallbackProcessor, CallbackProcessor>();
+        services.AddTransient<IUserInfoProvider, UserInfoProvider>();
     }
 }
