@@ -1,12 +1,20 @@
 @page
 @model ApogeeDev.WebhookTester.Pages.User.IndexModel
 
-<h1> User profile page</h1>
+<h3>Webhook Sessions</h3>
 
-<p>
-    User profile info here
-</p>
-
-<p>
-    List of user's webhook sessions & links
-</p>
+@if (Model.ShowUserSessions)
+{
+    foreach (var item in Model.UserSessions)
+    {
+        <div class="shadow-sm bg-body roundedshadow p-3 mb-3 bg-body rounded">
+            <p><a href="@Url.Content(item.SessionLink)">@item.WebhookSessionId</a></p>
+            <p class=text-muted>Callback url: @item.CallbackUrl</p>
+            <p class=text-muted>Started on: @item.StartDate</p>
+        </div>
+    }
+}
+else
+{
+    <div class="shadow-none p-3 mb-5 bg-light rounded">No sessions bookmarked yet.</div>
+}

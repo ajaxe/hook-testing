@@ -14,6 +14,7 @@ public interface IWebhookSessionService
     Task<WebhookSessionView> GetWebhookSession(Guid webhookSessionId = default);
     Task AssignWebhookSessionToCurrentUser(Guid webhookSessionId);
     Task RemoveWebhookSessionToCurrentUser(Guid webhookSessionId);
+    Task<List<WebhookSessionItemView>> GetCurrentUserSessions();
 }
 
 internal class WebhookSessionService : IWebhookSessionService
@@ -44,7 +45,8 @@ internal class WebhookSessionService : IWebhookSessionService
         {
             return null;
         }
-        var querySession = store.QuerySession();
+
+        using var querySession = store.QuerySession();
 
         var callback = await querySession.Query<CallbackRequestModel>()
             .Where(q => q.Id == callbackId)
@@ -112,7 +114,12 @@ internal class WebhookSessionService : IWebhookSessionService
 
             latestCallback = results.FirstOrDefault();
         }
+        return PrepareSessionView(webhookSession, callbacks, latestCallback);
+    }
 
+    private WebhookSessionView PrepareSessionView(WebhookSession webhookSession,
+        List<CallbackRequestListItem> callbacks, CallbackRequestModel? latestCallback)
+    {
         return new WebhookSessionView
         {
             StartDate = webhookSession.StartDate,
@@ -186,5 +193,25 @@ internal class WebhookSessionService : IWebhookSessionService
         storeSession.Store(existing);
 
         await storeSession.SaveChangesAsync();
+    }
+
+    public async Task<List<WebhookSessionItemView>> GetCurrentUserSessions()
+    {
+        if (CurrentUser is null)
+        {
+            return new List<WebhookSessionItemView>();
+        }
+
+        using var querySession = store.QuerySession();
+
+        var sessions = await querySession.Query<WebhookSession>()
+        .Where(q => q.UserIdentifier == CurrentUser.UserIdentifier)
+        .ToListAsync();
+
+        return sessions.Select(s => new WebhookSessionItemView
+        {
+            StartDate = s.StartDate,
+            WebhookSessionId = s.Id,
+        }).ToList();
     }
 }

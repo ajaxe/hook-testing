@@ -1,14 +1,14 @@
 @model bool
 @{
     bool nextSaveValue = !Model;
-    var icon = Model ? "bi-star-fill" : "bi-star";
-    var textColor = Model ? "text-warning" : "text-secondary";
-    var title = nextSaveValue ? "Save to profile" : "Remove from profile";
+    var icon = Model ? "bi-bookmark-check-fill" : "bi-bookmark";
+    var textColor = Model ? "text-success" : "text-secondary";
+    var title = nextSaveValue ? "Bookmark session" : "Remove bookmark";
 }
 <form class="d-inline" hx-post hx-page="/Session/Index" hx-page-handler="SaveUserSession" hx-route-save="@nextSaveValue"
     hx-swap="outerHTML" style="vertical-align: super!important;">
     @Html.AntiForgeryToken()
-    <button type="submit" class="btn btn-link @textColor fs-5" title="@title">
+    <button type="submit" class="btn btn-link @textColor fs-5 px-1" title="@title">
         <i class="bi @icon"></i>
     </button>
 </form>
