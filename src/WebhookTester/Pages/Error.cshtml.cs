@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using ApogeeDev.WebhookTester.Common.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -19,9 +21,29 @@ public class ErrorModel : PageModel
         _logger = logger;
     }
 
-    public void OnGet()
+    public IActionResult OnGet()
+    {
+        return ProcessError();
+    }
+
+    private IActionResult ProcessError()
     {
         RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+
+        var exceptionHandlerPathFeature =
+            HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+
+        if (exceptionHandlerPathFeature?.Error is UiException ex)
+        {
+            return StatusCode(500, ex.Error);
+        }
+
+        return Page();
+    }
+
+    public IActionResult OnPost()
+    {
+        return ProcessError();
     }
 }
 

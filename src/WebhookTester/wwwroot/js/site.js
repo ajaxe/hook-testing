@@ -3,6 +3,11 @@
 
 // Write your JavaScript code.
 $(function () {
+  const toastElList = document.querySelectorAll(".toast");
+  const toastList = [...toastElList].map(
+    (toastEl) => new bootstrap.Toast(toastEl)
+  );
+
   $("[data-urlpart]").on("click", function () {
     let $target = $(this);
     console.log($target.data("urlpart"));
@@ -26,4 +31,23 @@ $(function () {
       $(this).parent().find(".active").removeClass("active");
       $(this).addClass("active");
     });
+
+  $(document).on("htmx:responseError", function (e) {
+    const errModel = JSON.parse(e.detail.xhr.responseText);
+    console.log(errModel);
+    setGlobalToast(errModel.errorMessage, true);
+  });
 });
+
+function setGlobalToast(message, isError) {
+  const css = isError ? "text-bg-danger" : "text-bg-primary";
+  const $toastElem = $("#global-toast");
+  const globalToast = bootstrap.Toast.getInstance($toastElem[0]);
+
+  $toastElem.addClass(css).find(".toast-message").text(message);
+  globalToast.show();
+
+  $toastElem.one("shown.bs.toast", function () {
+    $(this).removeClass(css);
+  });
+}

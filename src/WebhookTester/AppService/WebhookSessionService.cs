@@ -1,7 +1,10 @@
 using ApogeeDev.WebhookTester.Abstractions;
+using ApogeeDev.WebhookTester.Common.Configuration;
+using ApogeeDev.WebhookTester.Common.Exceptions;
 using ApogeeDev.WebhookTester.Common.Models;
 using ApogeeDev.WebhookTester.Common.ViewModels;
 using Marten;
+using Microsoft.Extensions.Options;
 
 namespace ApogeeDev.WebhookTester.AppService;
 
@@ -18,13 +21,21 @@ internal class WebhookSessionService : IWebhookSessionService
     private readonly IDocumentStore store;
     private readonly IUserInfoProvider userInfo;
     private readonly ILogger<WebhookSessionService> logger;
+    private readonly int maxSessionPerUser;
+
+    private UserProfile currentUser;
+
+    private UserProfile CurrentUser => currentUser ?? (currentUser = userInfo.GetUserProfile());
 
     public WebhookSessionService(IDocumentStore store,
-        IUserInfoProvider userInfo, ILogger<WebhookSessionService> logger)
+        IUserInfoProvider userInfo, IOptions<AppOptions> options,
+        ILogger<WebhookSessionService> logger)
     {
         this.store = store;
         this.userInfo = userInfo;
         this.logger = logger;
+        this.maxSessionPerUser = options?.Value.MaxSessionPerUser
+            ?? throw new InvalidOperationException("Invalid config 'MaxSessionPerUser'");
     }
 
     public async Task<CallbackRequestModel?> GetCallback(Guid callbackId)
@@ -114,29 +125,37 @@ internal class WebhookSessionService : IWebhookSessionService
 
     public async Task AssignWebhookSessionToCurrentUser(Guid webhookSessionId)
     {
-        await UpdateWebhookSessionForCurrentUser(webhookSessionId, setUser: true);
+        using var storeSession = await store.OpenSessionAsync(new Marten.Services.SessionOptions());
+
+        var assignedCount = await storeSession.Query<WebhookSession>()
+        .CountAsync(q => q.UserIdentifier == CurrentUser.UserIdentifier);
+
+        if (assignedCount > maxSessionPerUser)
+        {
+            throw new UiException($"Cannot save more than {maxSessionPerUser} sessions to user profile.");
+        }
+
+        await UpdateWebhookSessionForCurrentUser(webhookSessionId, setUser: true, storeSession);
     }
     public async Task RemoveWebhookSessionToCurrentUser(Guid webhookSessionId)
     {
-        await UpdateWebhookSessionForCurrentUser(webhookSessionId, setUser: false);
+        using var storeSession = await store.OpenSessionAsync(new Marten.Services.SessionOptions());
+        await UpdateWebhookSessionForCurrentUser(webhookSessionId, setUser: false, storeSession);
     }
-    private async Task UpdateWebhookSessionForCurrentUser(Guid webhookSessionId, bool setUser)
+    private async Task UpdateWebhookSessionForCurrentUser(Guid webhookSessionId,
+        bool setUser, IDocumentSession? storeSession)
     {
         if (webhookSessionId == default)
         {
             return;
         }
 
-        var currentUser = userInfo.GetUserProfile();
-
-        if (currentUser is null)
+        if (CurrentUser is null)
         {
             logger.LogWarning("Invalid current user information, cannot save @{WebhookSessionId}",
                 webhookSessionId);
             return;
         }
-
-        using var storeSession = await store.OpenSessionAsync(new Marten.Services.SessionOptions());
 
         var existing = await storeSession.Query<WebhookSession>()
         .Where(q => q.Id == webhookSessionId)
