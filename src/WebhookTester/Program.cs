@@ -1,3 +1,4 @@
+using System.Net;
 using ApogeeDev.WebhookTester;
 using ApogeeDev.WebhookTester.AppService;
 using ApogeeDev.WebhookTester.Common.Configuration;
@@ -5,6 +6,7 @@ using ApogeeDev.WebhookTester.Common.Models;
 using ApogeeDev.WebhookTester.Middlewares;
 using Marten;
 using Marten.Schema.Identity;
+using Microsoft.AspNetCore.HttpOverrides;
 using Oakton;
 using Weasel.Core;
 
@@ -27,6 +29,16 @@ builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/User");
 });
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.RequireHeaderSymmetry = false;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMarten(options =>
 {
@@ -57,6 +69,8 @@ StartupInitializers.ConfigureGoogleAuth(builder.Services, appOptions);
 
 var app = builder.Build();
 
+app.UseForwardedHeaders();
+
 string appPrefix = Environment.GetEnvironmentVariable($"{EnvVarPrefix}AppPathPrefix") ?? string.Empty;
 
 if (!string.IsNullOrWhiteSpace(appPrefix))
@@ -76,8 +90,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// using reverse proxy for SSL termination
-//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseCallbackHandler();
