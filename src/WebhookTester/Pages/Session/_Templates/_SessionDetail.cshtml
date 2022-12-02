@@ -11,11 +11,12 @@
         </div>
         <p class="card-text">
             <span class="fw-semibold">Session Id:</span> @Model.WebhookSessionId <button type="button"
-                class="btn btn-outline text-primary" data-urlpart="session/@Model.WebhookSessionId"><i
+                class="btn btn-outline text-primary" data-urlpart="@Url.Content(Model.SessionLink)"><i
                     class="bi bi-clipboard"></i> Copy link to session</button>
             <br>
             <span class="fw-semibold">Callback URL:</span> @Model.CallbackUrl <button type="button"
-                class="btn btn-outline text-primary" data-urlpart="@Model.CallbackUrl"><i class="bi bi-clipboard"></i>
+                class="btn btn-outline text-primary" data-urlpart="@Url.Content(Model.CallbackUrl)"><i
+                    class="bi bi-clipboard"></i>
                 Copy url</button>
         </p>
     </div>

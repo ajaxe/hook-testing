@@ -17,7 +17,7 @@ $(function () {
     $icon.removeClass(orignalCss).addClass(effectCss);
     $target.removeClass("text-primary").addClass("text-success copy-fadeout");
     let urlpart = $target.data("urlpart");
-    navigator.clipboard.writeText([location.origin, urlpart].join("/"));
+    navigator.clipboard.writeText(location.origin + urlpart);
     setTimeout(function () {
       $icon.removeClass(effectCss).addClass(orignalCss);
       $target.removeClass("text-success copy-fadeout").addClass("text-primary");

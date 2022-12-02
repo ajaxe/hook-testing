@@ -14,7 +14,8 @@ public class WebhookSessionView
     public Guid WebhookSessionId { get; set; }
     public string UserIdentifier { get; set; }
     public bool IsAssignedToUser => !string.IsNullOrWhiteSpace(UserIdentifier);
-    public string CallbackUrl => $"/callback/{WebhookSessionId}";
+    public string CallbackUrl => $"~/callback/{WebhookSessionId}";
+    public string SessionLink => $"~/session/{WebhookSessionId}";
     public List<CallbackRequestListItem> CallRequests { get; set; }
     public CallbackRequestModel? MostRecentCallback { get; set; }
 
