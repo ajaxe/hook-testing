@@ -48,12 +48,12 @@ public class CallbackHandlerMiddleware
                 elem => elem.Value.ToList()),
             RequestBody = await reader.ReadToEndAsync(),
             RequestMethod = context.Request.Method,
-            QueryString = context.Request.Query,
+            QueryString = context.Request.Query.ToList(),
         };
 
         if (context.Request.HasFormContentType)
         {
-            command.FormData = context.Request.Form;
+            command.FormData = context.Request.Form.ToList();
             command.Files = context.Request.Form?.Files?.Select(f => new FormFileData
             {
                 FileName = f.FileName,

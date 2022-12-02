@@ -110,6 +110,7 @@ internal class WebhookSessionService : IWebhookSessionService
                 {
                     Id = r.Id,
                     ReceivedDate = r.ReceivedDate,
+                    RequestMethod = r.RequestMethod
                 }).ToList();
 
             latestCallback = results.FirstOrDefault();
