@@ -2,6 +2,7 @@ using ApogeeDev.WebhookTester;
 using ApogeeDev.WebhookTester.AppService;
 using ApogeeDev.WebhookTester.Common.Configuration;
 using ApogeeDev.WebhookTester.Common.Models;
+using ApogeeDev.WebhookTester.Middlewares;
 using Marten;
 using Marten.Schema.Identity;
 using Oakton;
@@ -78,6 +79,8 @@ if (!app.Environment.IsDevelopment())
 // using reverse proxy for SSL termination
 //app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseCallbackHandler();
 
 app.UseRouting();
 app.UseAuthentication();

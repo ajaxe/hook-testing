@@ -1,3 +1,4 @@
+using System.Threading;
 using ApogeeDev.WebhookTester.Common.Commands;
 using ApogeeDev.WebhookTester.Common.Models;
 using Marten;
@@ -49,6 +50,10 @@ internal class CallbackProcessor : ICallbackProcessor
         {
             Headers = callback.Headers,
             RequestBody = callback.RequestBody,
+            RequestMethod = callback.RequestMethod,
+            QueryString = callback.QueryString,
+            FormData = callback.FormData,
+            Files = callback.Files,
             WebhookSessionId = webhookSession.Id,
             ReceivedDate = DateTime.UtcNow
         };
