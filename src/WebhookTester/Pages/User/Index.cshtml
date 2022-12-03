@@ -10,7 +10,8 @@
         <div class="shadow-sm bg-body roundedshadow p-3 mb-3 bg-body rounded">
             <p><a href="@Url.Content(item.SessionLink)">@item.WebhookSessionId</a></p>
             <p class=text-muted>Callback url: @Url.Content(item.CallbackUrl), </p>
-            <p class=text-muted>Started on: @item.StartDate</p>
+            <p class=text-muted>Started on: <span
+            class="d-none need-dt-fix">@item.StartDate.ToString("yyyy-MM-ddTHH:mm:ssZ")</span></p>
         </div>
     }
 }

@@ -1,7 +1,7 @@
 ﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
-// Write your JavaScript code.
+let DateTime = luxon.DateTime;
 $(function () {
   const toastElList = document.querySelectorAll(".toast");
   const toastList = [...toastElList].map(
@@ -37,6 +37,14 @@ $(function () {
     console.log(errModel);
     setGlobalToast(errModel.errorMessage, true);
   });
+
+  for (const elem of $(".need-dt-fix")) {
+    let $elem = $(elem);
+    let dt = $elem.text().trim();
+    let iso = DateTime.fromISO(dt);
+    let formatted = iso.toFormat("h:mm a 'on' MMM d, yyyy");
+    $elem.empty().text(formatted).removeClass("d-none need-dt-fix");
+  }
 });
 
 function setGlobalToast(message, isError) {

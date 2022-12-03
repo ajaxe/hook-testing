@@ -1,2 +1,4 @@
+.git
 ./src/WebhookTester/bin/*
 ./src/WebhookTester/obj/*
+./**/secret*

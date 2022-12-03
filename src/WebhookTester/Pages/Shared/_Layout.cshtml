@@ -19,7 +19,9 @@
     <header>
         <nav class="navbar navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand mb-0 h1 text-dark" href="#">Webhook Tester</a>
+                <a class="navbar-brand mb-0 h1 text-dark" href="@Url.Content("~/")">
+                    <img src="@Url.Content("~/A_logo_v2.svg")" alt="apogee-dev" style="width: 24px;" />
+                    Webhook Tester</a>
 
                 @if (!User.Identity.IsAuthenticated)
                 {
@@ -65,11 +67,13 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/cash-dom@8.1.1/dist/cash.min.js"
-        integrity="sha256-IePJAeD7O2sVuDQhnSmW06vOpqIacmQX6EgP8nkKYwc=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/htmx.org@1.8.4"
-        integrity="sha384-wg5Y/JwF7VxGk4zLsJEcAojRtlVp1FKKdGy1qN+OMtdq72WRvX/EdRdqg/LOhYeV"
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cash-dom@8.1.2/dist/cash.min.js"
+        integrity="sha256-isTCc4cqM5EKhzPKIlEcwPhmcan0jwGxQF5rfTD/4eA=" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.1.1/build/global/luxon.min.js"
+        integrity="sha256-EyD7akNMqhJB13TabqvIVtego8LX1P5+qkBXgqtPAIE=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.8.4/dist/htmx.min.js"
+        integrity="sha256-33LtsUGhZXiUWgNWyKajcjkBUlGWIHFjm5mwGEaR7R0=" crossorigin="anonymous"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")"></script>
     <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
