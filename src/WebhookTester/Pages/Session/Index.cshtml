@@ -9,7 +9,9 @@
 
 @if (Model.NewSession is null)
 {
-    <strong>No webhook session found!!</strong>
+    <div class="border-top border-start shadow p-3 mb-5 bg-light rounded d-50 mx-auto">
+        <strong>No webhook session found!!</strong>
+    </div>
 }
 else
 {
@@ -19,14 +21,23 @@ else
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4 col-lg-3">
-            <partial name="_Templates/_CallbackRequestList" model="Model.NewSession.CallRequests" />
-        </div>
-        <div class="col-md-8 col-lg-9" id="callback-detail">
-            @if (Model.NewSession.MostRecentCallback is not null)
-            {
-                <partial name="_Templates/_CallbackRequestDetail" model="Model.NewSession.MostRecentCallback" />
-            }
-        </div>
+        @if (Model.NewSession.CallRequests.Count == 0)
+        {
+            <div class="border-top border-start shadow p-3 mb-5 bg-light rounded w-50 mx-auto">
+                <i>No callbacks received.</i>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-4 col-lg-9 col-xl-10">
+                <partial name="_Templates/_CallbackRequestList" model="Model.NewSession.CallRequests" />
+            </div>
+            <div class="col-md-8 col-lg-3 col-xl-2" id="callback-detail">
+                @if (Model.NewSession.MostRecentCallback is not null)
+                {
+                    <partial name="_Templates/_CallbackRequestDetail" model="Model.NewSession.MostRecentCallback" />
+                }
+            </div>
+        }
     </div>
 }
