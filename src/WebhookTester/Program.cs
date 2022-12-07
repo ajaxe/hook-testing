@@ -4,6 +4,7 @@ using ApogeeDev.WebhookTester.AppService;
 using ApogeeDev.WebhookTester.Common.Configuration;
 using ApogeeDev.WebhookTester.Common.Models;
 using ApogeeDev.WebhookTester.Middlewares;
+using AspNetCoreRateLimit;
 using Marten;
 using Marten.Schema.Identity;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -63,12 +64,16 @@ builder.Services.AddMarten(options =>
 })
 .OptimizeArtifactWorkflow();
 
+builder.Services.Configure<IpRateLimitOptions>(
+    builder.Configuration.GetSection("IpRateLimiting"));
+
 StartupInitializers.ConfigureInjectableServices(builder.Services);
 
 StartupInitializers.ConfigureGoogleAuth(builder.Services, appOptions);
 
 var app = builder.Build();
 
+app.UseIpRateLimiting();
 app.UseForwardedHeaders();
 
 string appPrefix = Environment.GetEnvironmentVariable($"{EnvVarPrefix}AppPathPrefix") ?? string.Empty;
