@@ -2,6 +2,7 @@ using ApogeeDev.WebhookTester.Abstractions;
 using ApogeeDev.WebhookTester.AppService;
 using ApogeeDev.WebhookTester.Common.Configuration;
 using ApogeeDev.WebhookTester.Providers;
+using ApogeeDev.WebhookTester.Workers;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -40,5 +41,7 @@ public static class StartupInitializers
 
         services.AddInMemoryRateLimiting();
         services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
+        services.AddHostedService<WebhookSessionCleanupWorker>();
     }
 }

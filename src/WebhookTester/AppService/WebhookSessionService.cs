@@ -15,6 +15,7 @@ public interface IWebhookSessionService
     Task AssignWebhookSessionToCurrentUser(Guid webhookSessionId);
     Task RemoveWebhookSessionToCurrentUser(Guid webhookSessionId);
     Task<List<WebhookSessionItemView>> GetCurrentUserSessions();
+    Task<int> CleanupWebhookSessions(TimeSpan cutOff);
 }
 
 internal class WebhookSessionService : IWebhookSessionService
@@ -214,5 +215,34 @@ internal class WebhookSessionService : IWebhookSessionService
             StartDate = s.StartDate,
             WebhookSessionId = s.Id,
         }).ToList();
+    }
+
+    public async Task<int> CleanupWebhookSessions(TimeSpan cutOff)
+    {
+        cutOff = cutOff == TimeSpan.MinValue || cutOff == TimeSpan.MinValue
+            ? TimeSpan.FromDays(2) : cutOff;
+
+        var cutOffDate = (DateTimeOffset.UtcNow - cutOff).DateTime;
+
+        using var storeSession = await store.OpenSessionAsync(new Marten.Services.SessionOptions());
+
+        var sessionsToDelete = await storeSession.Query<WebhookSession>()
+        .Where(q => q.StartDate <= cutOffDate && q.UserIdentifier == null)
+        .Select(s => s.Id)
+        .ToListAsync();
+
+        storeSession.DeleteWhere<WebhookSession>(q => q.StartDate <= cutOffDate && q.UserIdentifier == null);
+
+        foreach (var chunk in sessionsToDelete.Chunk(10))
+        {
+            var idList = string.Join(",", chunk.Select(c => c.ToString().ToLower()));
+            storeSession.QueueSqlCommand(
+                @"delete from mt_doc_callbackrequestmodel
+                where data->>'WebhookSessionId' in (?)", idList);
+        }
+
+        await storeSession.SaveChangesAsync();
+
+        return sessionsToDelete.Count;
     }
 }
