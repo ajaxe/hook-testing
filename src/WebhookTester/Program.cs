@@ -9,6 +9,8 @@ using Marten;
 using Marten.Schema.Identity;
 using Microsoft.AspNetCore.HttpOverrides;
 using Oakton;
+using Serilog;
+using Serilog.Formatting.Compact;
 using Weasel.Core;
 
 const string EnvVarPrefix = "APP_";
@@ -16,6 +18,12 @@ const string EnvVarPrefix = "APP_";
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.ApplyOaktonExtensions();
+
+Log.Logger = new LoggerConfiguration()
+.WriteTo.Console(new CompactJsonFormatter())
+.CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddOptions();
 builder.Configuration
@@ -75,6 +83,7 @@ var app = builder.Build();
 
 app.UseIpRateLimiting();
 app.UseForwardedHeaders();
+app.UseSerilogRequestLogging();
 
 string appPrefix = Environment.GetEnvironmentVariable($"{EnvVarPrefix}AppPathPrefix") ?? string.Empty;
 
