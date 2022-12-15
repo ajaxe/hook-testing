@@ -25,15 +25,15 @@ internal class WebhookSessionCleanupWorker : BackgroundService
         {
             logger.LogInformation("Attempting to cleanup webhook sessions");
 
-            if (LastRunAt is null || DateTime.UtcNow - LastRunAt >= RunInterval)
+            if (LastRunAt is null || (DateTime.UtcNow - LastRunAt) >= RunInterval)
             {
-                var deleted = await webhookSessionService.CleanupWebhookSessions(TimeSpan.FromDays(2));
-                logger.LogInformation($"Deleted  webhook sessions: {deleted}");
+                var deletedCount = await webhookSessionService.CleanupWebhookSessions(CuttOff);
+                logger.LogInformation("Deleted  webhook sessions: {DeletedCount}", deletedCount);
                 LastRunAt = DateTime.UtcNow;
             }
             else
             {
-                logger.LogInformation("Skipping cleanup");
+                logger.LogInformation("Skipping cleanup {LastRunAt}", LastRunAt);
             }
 
             await Task.Delay(DelayInterval, stoppingToken);

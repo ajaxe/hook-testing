@@ -7,6 +7,7 @@ using ApogeeDev.WebhookTester.Middlewares;
 using AspNetCoreRateLimit;
 using Marten;
 using Marten.Schema.Identity;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Oakton;
 using Serilog;
@@ -74,6 +75,12 @@ builder.Services.AddMarten(options =>
 
 builder.Services.Configure<IpRateLimitOptions>(
     builder.Configuration.GetSection("IpRateLimiting"));
+
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo("/dpapi-keys/"));
+}
 
 StartupInitializers.ConfigureInjectableServices(builder.Services);
 
