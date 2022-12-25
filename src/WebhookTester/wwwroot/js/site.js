@@ -8,6 +8,52 @@ $(function () {
     (toastEl) => new bootstrap.Toast(toastEl)
   );
 
+  initializeUrlCopy();
+
+  initCallbackListUi();
+
+  htmxResponseErrorHandler();
+
+  fixDateDisplay();
+});
+
+function initCallbackListUi() {
+  const $callbackList = $("#callback-list");
+  $callbackList.find("li:first-child").addClass("active");
+  $callbackList.find("li").on("click", function () {
+    $(this).parent().find(".active").removeClass("active");
+    $(this).addClass("active");
+  });
+
+  resizeCallbackList($callbackList);
+}
+
+function resizeCallbackList($callbackList) {
+  function resize() {
+    var htOffset =
+      $("#callback-detail > h5").outerHeight() * 5 +
+      $("header").outerHeight() +
+      $("#session-detail").outerHeight();
+    $callbackList
+      .parent()
+      .css("max-height", "calc(100vh - " + htOffset + "px)")
+      .css("overflow", "auto");
+
+    console.log("htOffset: " + htOffset);
+  }
+
+  resize();
+
+  let resizeTimeout = 0;
+
+  $(window).on("resize", function () {
+    console.log("resize event");
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(resize, 200);
+  });
+}
+
+function initializeUrlCopy() {
   $("[data-urlpart]").on("click", function () {
     let $target = $(this);
     console.log($target.data("urlpart"));
@@ -23,21 +69,17 @@ $(function () {
       $target.removeClass("text-success copy-fadeout").addClass("text-primary");
     }, 2000);
   });
+}
 
-  $("#callback-list").find("li:first-child").addClass("active");
-  $("#callback-list")
-    .find("li")
-    .on("click", function () {
-      $(this).parent().find(".active").removeClass("active");
-      $(this).addClass("active");
-    });
-
+function htmxResponseErrorHandler() {
   $(document).on("htmx:responseError", function (e) {
     const errModel = JSON.parse(e.detail.xhr.responseText);
     console.log(errModel);
     setGlobalToast(errModel.errorMessage, true);
   });
+}
 
+function fixDateDisplay() {
   for (const elem of $(".need-dt-fix")) {
     let $elem = $(elem);
     let dt = $elem.text().trim();
@@ -45,8 +87,7 @@ $(function () {
     let formatted = iso.toFormat("h:mm a 'on' MMM d, yyyy");
     $elem.empty().text(formatted).removeClass("d-none need-dt-fix");
   }
-});
-
+}
 function setGlobalToast(message, isError) {
   const css = isError ? "text-bg-danger" : "text-bg-primary";
   const $toastElem = $("#global-toast");
