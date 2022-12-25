@@ -1,0 +1,37 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#retention">
+    Data retention & usage
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="retention" tabindex="-1" aria-labelledby="retentionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="retentionLabel">Data retention & usage</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6>Logged in sessions</h6>
+                <p>
+                    Logged in user profile is only used for diplay purposes and not shared with any external services.
+                    Profile information includes <span class="fst-italic">first & last name, email address and unique
+                        identifier</span> from the authentication platform. The unique "identifier" is used to access
+                    bookmarked sessions.
+                </p>
+                <p>
+                    Any webhook sessions that are not bookmarked by the logged in user is considered as <span
+                        class="fst-italic">"Anonymous"</span> and removed after 24hrs.
+                </p>
+                <h6>Anonymous webhook sessions</h6>
+                <p>
+                    Anonymous webhook sessions are not linked to any identifiable user. Data related to these sessions
+                    are removed after 24hrs.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

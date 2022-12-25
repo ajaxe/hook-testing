@@ -15,9 +15,36 @@ public class IndexModel : PageModel
         _sessionService = sessionService;
         _logger = logger;
     }
+    public IEnumerable<PerkDescription> Perks
+    {
+        get
+        {
+            yield return new PerkDescription
+            {
+                Title = "Anonymous use",
+                Description = "No log in required to start using it."
+            };
+            yield return new PerkDescription
+            {
+                Title = "Free to use",
+                Description = "Create as many anonymous webhook sessions needed, these remain active for 24hrs."
+            };
+            yield return new PerkDescription
+            {
+                Title = "Bookmark sessions",
+                Description = "Up to 10 sessions can be saved for later, after log in."
+            };
+            yield return new PerkDescription
+            {
+                Title = "Inspect received callbacks",
+                Description = "Simple view of received callback request"
+            };
+        }
+    }
 
-    [BindProperty(SupportsGet = true)]
-    public Guid Id { get; set; }
-
-    public WebhookSessionView NewSession { get; set; }
+    public class PerkDescription
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+    }
 }
