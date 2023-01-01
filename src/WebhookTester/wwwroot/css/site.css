@@ -35,3 +35,6 @@ html {
 #avatar-btn::after {
   content: none;
 }
+.bookmark-item > p {
+  margin-bottom: 0;
+}

@@ -43,7 +43,7 @@
             </div>
         </nav>
     </header>
-    <div class="@(ViewData["mainBodyClass"] ?? "container")">
+    <div class="@(ViewData["mainBodyClass"] ?? "container")" style="margin-bottom: 60px;">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -56,11 +56,15 @@
                     &copy; 2022 - WebhookTester - <a href="https://www.apogee-dev.com/privacy/">Privacy</a>
                 </div>
                 <div>
-                    <partial name="_DataRetentionUsage">
+                    <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#retention">
+                        Data retention & usage
+                    </button>
+
                 </div>
             </div>
         </div>
     </footer>
+    <partial name="_DataRetentionUsage"></partial>
 
 
     <div id="global-toast"

@@ -1,16 +1,23 @@
 @page
 @model ApogeeDev.WebhookTester.Pages.User.IndexModel
 
-<h3>Webhook Sessions</h3>
+@{
+    ViewData["Title"] = "Bookmarked";
+}
+
+<h3>Bookmarked Sessions</h3>
 
 @if (Model.ShowUserSessions)
 {
     foreach (var item in Model.UserSessions)
     {
-        <div class="shadow-sm bg-body roundedshadow p-3 mb-3 bg-body rounded">
+        <div class="shadow-sm bg-body roundedshadow p-3 mb-3 bg-body rounded bookmark-item">
             <p><a href="@Url.Content(item.SessionLink)">@item.WebhookSessionId</a></p>
-            <p class=text-muted>Callback url: @Url.Content(item.CallbackUrl), </p>
-            <p class=text-muted>Started on: <span
+            <p class=text-muted><span class="fw-semibold">Callback url:</span> @item.CallbackUrl <button type="button"
+            class="btn btn-outline text-primary" data-urlpart="@Url.Content(item.CallbackUrl)"><i
+                class="bi bi-clipboard"></i>
+                    Copy url</button></p>
+            <p class=text-muted><span class="fw-semibold">Started on:</span><span
             class="d-none need-dt-fix">@item.StartDate.ToString("yyyy-MM-ddTHH:mm:ssZ")</span></p>
         </div>
     }
