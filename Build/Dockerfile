@@ -10,7 +10,7 @@ RUN dotnet publish -c Release -r linux-musl-x64 -o published --self-contained
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
 
-RUN apk add bash icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib
+RUN apk add bash icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib curl
 
 RUN addgroup -S app \
     && adduser -S app -G app
@@ -25,5 +25,8 @@ ENV ASPNETCORE_URLS=http://*:5000 \
     ASPNETCORE_ENVIRONMENT=Production
 
 EXPOSE 5000
+
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl --fail http://localhost:5000/healthcheck || exit
 
 CMD ["dotnet", "./WebhookTester.dll"]

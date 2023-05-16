@@ -24,6 +24,7 @@ Log.Logger = new LoggerConfiguration()
 .WriteTo.Console(new CompactJsonFormatter())
 .CreateLogger();
 
+builder.Services.AddHealthChecks();
 builder.Host.UseSerilog();
 
 builder.Services.AddOptions();
@@ -120,5 +121,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapHealthChecks("/healthcheck");
 
 return await app.RunOaktonCommands(args);
