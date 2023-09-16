@@ -75,7 +75,7 @@ internal class WebhookSessionService : IWebhookSessionService
         List<CallbackRequestListItem> callbacks;
         CallbackRequestModel? latestCallback = null;
 
-        using var storeSession = await store.OpenSessionAsync(new Marten.Services.SessionOptions());
+        using var storeSession = store.OpenSession(new Marten.Services.SessionOptions());
 
         if (webhookSessionId == default)
         {
@@ -134,7 +134,7 @@ internal class WebhookSessionService : IWebhookSessionService
 
     public async Task AssignWebhookSessionToCurrentUser(Guid webhookSessionId)
     {
-        using var storeSession = await store.OpenSessionAsync(new Marten.Services.SessionOptions());
+        using var storeSession = store.OpenSession(new Marten.Services.SessionOptions());
 
         var assignedCount = await storeSession.Query<WebhookSession>()
         .CountAsync(q => q.UserIdentifier == CurrentUser.UserIdentifier);
@@ -148,7 +148,7 @@ internal class WebhookSessionService : IWebhookSessionService
     }
     public async Task RemoveWebhookSessionToCurrentUser(Guid webhookSessionId)
     {
-        using var storeSession = await store.OpenSessionAsync(new Marten.Services.SessionOptions());
+        using var storeSession = store.OpenSession(new Marten.Services.SessionOptions());
         await UpdateWebhookSessionForCurrentUser(webhookSessionId, setUser: false, storeSession);
     }
     private async Task UpdateWebhookSessionForCurrentUser(Guid webhookSessionId,
@@ -224,7 +224,7 @@ internal class WebhookSessionService : IWebhookSessionService
 
         var cutOffDate = (DateTimeOffset.UtcNow - cutOff).DateTime;
 
-        using var storeSession = await store.OpenSessionAsync(new Marten.Services.SessionOptions());
+        using var storeSession = store.OpenSession(new Marten.Services.SessionOptions());
 
         var sessionsToDelete = await storeSession.Query<WebhookSession>()
         .Where(q => q.StartDate <= cutOffDate && q.UserIdentifier == null)

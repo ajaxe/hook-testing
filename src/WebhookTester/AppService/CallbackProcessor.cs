@@ -35,7 +35,7 @@ internal class CallbackProcessor : ICallbackProcessor
 
     private async Task HandleCallbackReceived(CallbackReceived callback)
     {
-        using var storeSession = await store.OpenSessionAsync(new Marten.Services.SessionOptions());
+        using var storeSession = store.OpenSession(new Marten.Services.SessionOptions());
 
         var webhookSession = await storeSession.LoadAsync<WebhookSession>(callback.WebhookSessionId);
 
