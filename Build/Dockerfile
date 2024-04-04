@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine as builder
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine as builder
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
 RUN mkdir -p /home/app/
 WORKDIR /home/app/
@@ -8,7 +8,7 @@ RUN dotnet restore ./WebhookTester.csproj
 COPY ./src/WebhookTester/ .
 RUN dotnet publish -c Release -r linux-musl-x64 -o published --self-contained
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
 
 RUN apk add bash icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib curl
 
