@@ -1,12 +1,28 @@
 ﻿@using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor Accessor
+@inject Microsoft.Extensions.Hosting.IHostEnvironment Env
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @if (@**!Env.IsDevelopment()**@ true)
+    {
+        <meta http-equiv="Content-Security-Policy" content="base-uri 'self';
+                    default-src 'self';
+                    img-src data: https:;
+                    object-src 'none';
+                    script-src 'self' https://cdn.jsdelivr.net/npm/cash-dom@8.1.2/ https://cdn.jsdelivr.net/npm/luxon@3.1.1/ https://cdn.jsdelivr.net/npm/htmx.org@1.8.4/ https://accounts.google.com/gsi/client;
+                    style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/ https://accounts.google.com/gsi/style;
+                    frame-src https://accounts.google.com/;
+                    font-src https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/;
+                    connect-src https://accounts.google.com/gsi/status;
+                    upgrade-insecure-requests;
+                    report-to cspreport;">
+    }
     <title>@ViewData["Title"] - WebhookTester</title>
     <link rel="stylesheet" href="@Url.Content("~/lib/bootstrap/dist/css/bootstrap.min.css")" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"
@@ -27,12 +43,15 @@
                 {
                     <div class="d-flex" role="auth">
                         <div id="g_id_onload" data-client_id="@Configuration["AppOptions:GoogleClientId"]"
-                        data-auto_select="false" data-login_uri="@Url.PageLink(pageName: "/LoginHandler", pageHandler: "GoogleSignIn",
-                        values: new { currentPage = Accessor.HttpContext.Request.PathBase +
-                                Accessor.HttpContext.Request.Path })">
+                            data-auto_select="false" data-login_uri="@Url.PageLink(pageName: "/LoginHandler", pageHandler: "GoogleSignIn",
+                        values: new
+                        {
+                            currentPage = Accessor.HttpContext.Request.PathBase +
+                                Accessor.HttpContext.Request.Path
+                        })">
                         </div>
                         <div class="g_id_signin" data-type="standard" data-size="medium" data-theme="outline"
-                        data-text="signin" data-shape="rectangular" data-logo_alignment="left">
+                            data-text="signin" data-shape="rectangular" data-logo_alignment="left">
                         </div>
                     </div>
                 }

@@ -115,6 +115,7 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseCallbackHandler();
+app.UseCspReportMiddleware();
 
 app.UseRouting();
 app.UseAuthentication();
