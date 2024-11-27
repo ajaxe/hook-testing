@@ -15,11 +15,10 @@
                     default-src 'self';
                     img-src data: https:;
                     object-src 'none';
-                    script-src 'self' https://cdn.jsdelivr.net/npm/cash-dom@8.1.2/ https://cdn.jsdelivr.net/npm/luxon@3.1.1/ https://cdn.jsdelivr.net/npm/htmx.org@1.8.4/ https://accounts.google.com/gsi/client;
-                    style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/ https://accounts.google.com/gsi/style;
+                    script-src 'self' https://cdn.jsdelivr.net/npm/cash-dom@8.1.2/ https://cdn.jsdelivr.net/npm/luxon@3.1.1/ https://cdn.jsdelivr.net/npm/htmx.org@1.8.4/;
+                    style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/;
                     frame-src https://accounts.google.com/;
                     font-src https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/;
-                    connect-src https://accounts.google.com/gsi/status;
                     upgrade-insecure-requests;
                     report-to cspreport;">
     }
@@ -98,7 +97,7 @@
         integrity="sha256-EyD7akNMqhJB13TabqvIVtego8LX1P5+qkBXgqtPAIE=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.8.4/dist/htmx.min.js"
         integrity="sha256-33LtsUGhZXiUWgNWyKajcjkBUlGWIHFjm5mwGEaR7R0=" crossorigin="anonymous"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")"></script>
     <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
 
