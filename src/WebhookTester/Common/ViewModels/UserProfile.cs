@@ -24,7 +24,7 @@ public class UserProfile
     public string Identifier => _identifier ?? (_identifier = GetClaimValue(AppClaimTypes.NameIdentifier));
     private string? _idProvider;
     public string IdProvider => _idProvider ?? (_idProvider = GetClaimValue(AppClaimTypes.IdP));
-    public string UserIdentifier => $"{IdProvider}:{Identifier}";
+    public string UserIdentifier => $"{IdProvider.ToLower()}:{Identifier}";
 
     private string GetClaimValue(string claimType)
     {

@@ -18,6 +18,7 @@ namespace ApogeeDev.WebhookTester;
 public class Startup
 {
     public const string EnvVarPrefix = "APP_";
+    public static string AppPrefix = Environment.GetEnvironmentVariable($"{EnvVarPrefix}AppPathPrefix") ?? string.Empty;
     public IConfiguration Configuration { get; }
     public IWebHostEnvironment Env { get; }
     public Startup(IConfiguration configuration, IWebHostEnvironment env)
@@ -32,8 +33,11 @@ public class Startup
         services.AddOptions();
 
         var appOptions = new AppOptions();
-
         Configuration.GetSection(AppOptions.SectionName).Bind(appOptions);
+
+        var authOptions = new OAuthOptions();
+        Configuration.GetSection(OAuthOptions.SectionName)
+            .Bind(authOptions);
 
         // Add services to the container.
         services.AddRazorPages(options =>
@@ -97,7 +101,7 @@ public class Startup
 
         StartupInitializers.ConfigureInjectableServices(services);
 
-        StartupInitializers.ConfigureGoogleAuth(services, appOptions);
+        StartupInitializers.ConfigureGoogleAuth(services, authOptions);
 
     }
     public void Configure(IApplicationBuilder app)
@@ -106,13 +110,11 @@ public class Startup
         app.UseForwardedHeaders();
         app.UseSerilogRequestLogging();
 
-        string appPrefix = Environment.GetEnvironmentVariable($"{EnvVarPrefix}AppPathPrefix") ?? string.Empty;
-
-        if (!string.IsNullOrWhiteSpace(appPrefix))
+        if (!string.IsNullOrWhiteSpace(AppPrefix))
         {
             app.Use((context, next) =>
             {
-                context.Request.PathBase = appPrefix;
+                context.Request.PathBase = AppPrefix;
                 return next();
             });
         }
