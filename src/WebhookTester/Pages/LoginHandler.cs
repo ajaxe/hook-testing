@@ -11,7 +11,13 @@ namespace ApogeeDev.WebhookTester.Pages;
 [IgnoreAntiforgeryToken]
 public class LoginHandler : PageModel
 {
+    public LoginHandler(ILogger<LoginHandler> logger)
+    {
+        this.logger = logger;
+    }
     private const string CsrfCookieName = "g_csrf_token";
+    private readonly ILogger<LoginHandler> logger;
+
     public async Task<IActionResult> OnPostGoogleSignInAsync(string credential,
         string g_csrf_token, [FromQuery] string currentPage)
     {
@@ -27,10 +33,11 @@ public class LoginHandler : PageModel
     private async Task<IActionResult> AuthenticateUsingGoogleToken(string credential,
         string g_csrf_token, string currentPage)
     {
-        IActionResult actionResult = null;
+        IActionResult? actionResult;
+
         if (!IsValidCsrfToken(g_csrf_token, out actionResult))
         {
-            return actionResult;
+            return actionResult ?? BadRequest();
         }
 
         try
@@ -43,7 +50,7 @@ public class LoginHandler : PageModel
         }
         catch (Google.Apis.Auth.InvalidJwtException ex)
         {
-            //_logger.LogError(ex, "Error validating id_token. Message: " + ex.Message);
+            logger.LogError(ex, "Error validating id_token. Message: " + ex.Message);
 
             actionResult = RedirectToPage("Index");
         }
@@ -68,12 +75,11 @@ public class LoginHandler : PageModel
             new ClaimsPrincipal(claimsIdentity));
     }
 
-    private bool IsValidCsrfToken(string csrfToken, out IActionResult actionResult)
+    private bool IsValidCsrfToken(string csrfToken, out IActionResult? actionResult)
     {
         if (Request.Cookies[CsrfCookieName] != csrfToken)
         {
-            //_logger.LogError("Invalid CSRF token");
-
+            logger.LogError("Invalid CSRF token");
             actionResult = RedirectToPage("Index");
             return false;
         }

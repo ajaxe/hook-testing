@@ -12,6 +12,7 @@ public class IndexModel : PageModel
     public IndexModel(IWebhookSessionService sessionService)
     {
         this.sessionService = sessionService;
+        UserSessions = new List<WebhookSessionItemView>();
     }
     public List<WebhookSessionItemView> UserSessions { get; set; }
     public bool ShowUserSessions => UserSessions.Count > 0;

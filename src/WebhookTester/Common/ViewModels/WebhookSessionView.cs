@@ -12,7 +12,7 @@ public class WebhookSessionView
 
     public DateTime StartDate { get; set; }
     public Guid WebhookSessionId { get; set; }
-    public string UserIdentifier { get; set; }
+    public string UserIdentifier { get; set; } = default!;
     public bool IsAssignedToUser => !string.IsNullOrWhiteSpace(UserIdentifier);
     public string CallbackUrl => $"~/callback/{WebhookSessionId}";
     public string SessionLink => $"~/session/{WebhookSessionId}";

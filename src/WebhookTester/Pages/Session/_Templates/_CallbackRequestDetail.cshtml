@@ -40,7 +40,7 @@
                             {
                             <tr>
                                 <td>@item.Key</td>
-                                <td>@(string.Join(',', item.Value))</td>
+                                <td>@(string.Join(',', item.Value!))</td>
                             </tr>
                             }
                         }
@@ -95,7 +95,7 @@
                 {
                 <tr>
                     <td>@item.Key</td>
-                    <td>@(string.Join(',', item.Value))</td>
+                    <td>@(string.Join(',', item.Value!))</td>
                 </tr>
                 }
         </table>

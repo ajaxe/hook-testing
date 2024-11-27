@@ -27,5 +27,5 @@ public class UiException : Exception
         };
     }
 
-    public ErrorViewModel Error { get; private set; }
+    public ErrorViewModel Error { get; private set; } = default!;
 }

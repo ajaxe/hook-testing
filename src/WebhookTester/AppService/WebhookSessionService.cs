@@ -11,7 +11,7 @@ namespace ApogeeDev.WebhookTester.AppService;
 public interface IWebhookSessionService
 {
     Task<CallbackRequestModel?> GetCallback(Guid callbackId);
-    Task<WebhookSessionView> GetWebhookSession(Guid webhookSessionId = default);
+    Task<WebhookSessionView?> GetWebhookSession(Guid webhookSessionId = default);
     Task AssignWebhookSessionToCurrentUser(Guid webhookSessionId);
     Task RemoveWebhookSessionToCurrentUser(Guid webhookSessionId);
     Task<List<WebhookSessionItemView>> GetCurrentUserSessions();
@@ -25,9 +25,9 @@ internal class WebhookSessionService : IWebhookSessionService
     private readonly ILogger<WebhookSessionService> logger;
     private readonly int maxSessionPerUser;
 
-    private UserProfile currentUser;
+    private UserProfile? currentUser;
 
-    private UserProfile CurrentUser => currentUser ?? (currentUser = userInfo.GetUserProfile());
+    private UserProfile? CurrentUser => currentUser ?? (currentUser = userInfo.GetUserProfile());
 
     public WebhookSessionService(IDocumentStore store,
         IUserInfoProvider userInfo, IOptions<AppOptions> options,
@@ -79,7 +79,7 @@ internal class WebhookSessionService : IWebhookSessionService
 
         if (webhookSessionId == default)
         {
-            logger.LogInformation("Creating webhook session id: @WebhookSessionId",
+            logger.LogInformation("Creating webhook session id: {@WebhookSessionId}",
                 webhookSessionId);
 
             webhookSession = new WebhookSession
@@ -94,7 +94,8 @@ internal class WebhookSessionService : IWebhookSessionService
         }
         else
         {
-            webhookSession = await storeSession.LoadAsync<WebhookSession>(webhookSessionId);
+            webhookSession = await storeSession.LoadAsync<WebhookSession>(webhookSessionId)
+                ?? throw new InvalidOperationException("Invalid 'webhookSessionId'");
 
             if (webhookSession is null)
             {
@@ -128,13 +129,16 @@ internal class WebhookSessionService : IWebhookSessionService
             WebhookSessionId = webhookSession.Id,
             CallRequests = callbacks,
             MostRecentCallback = PrepareCallbackModel(latestCallback),
-            UserIdentifier = webhookSession?.UserIdentifier,
+            UserIdentifier = webhookSession.UserIdentifier,
         };
     }
 
     public async Task AssignWebhookSessionToCurrentUser(Guid webhookSessionId)
     {
-        using var storeSession = store.OpenSession(new Marten.Services.SessionOptions());
+        using var storeSession = store.OpenSession(new Marten.Services.SessionOptions())
+            ?? throw new InvalidOperationException("Invalid marten session");
+
+        _ = CurrentUser ?? throw new InvalidOperationException("Invalid current user");
 
         var assignedCount = await storeSession.Query<WebhookSession>()
         .CountAsync(q => q.UserIdentifier == CurrentUser.UserIdentifier);
@@ -149,10 +153,10 @@ internal class WebhookSessionService : IWebhookSessionService
     public async Task RemoveWebhookSessionToCurrentUser(Guid webhookSessionId)
     {
         using var storeSession = store.OpenSession(new Marten.Services.SessionOptions());
-        await UpdateWebhookSessionForCurrentUser(webhookSessionId, setUser: false, storeSession);
+        await UpdateWebhookSessionForCurrentUser(webhookSessionId, setUser: false, storeSession!);
     }
     private async Task UpdateWebhookSessionForCurrentUser(Guid webhookSessionId,
-        bool setUser, IDocumentSession? storeSession)
+        bool setUser, IDocumentSession storeSession)
     {
         if (webhookSessionId == default)
         {
@@ -176,20 +180,20 @@ internal class WebhookSessionService : IWebhookSessionService
         }
 
         if (!string.IsNullOrWhiteSpace(existing.UserIdentifier)
-            && existing.UserIdentifier != currentUser.UserIdentifier)
+            && existing.UserIdentifier != CurrentUser.UserIdentifier)
         {
             logger.LogWarning("@{WebhookSessionId} is already assigned to @{User}, @{CurrentUser}",
-                webhookSessionId, existing.UserIdentifier, currentUser.UserIdentifier);
+                webhookSessionId, existing.UserIdentifier, CurrentUser.UserIdentifier);
             return;
         }
 
         if (setUser)
         {
-            existing.UserIdentifier = currentUser.UserIdentifier;
+            existing.UserIdentifier = CurrentUser.UserIdentifier;
         }
         else
         {
-            existing.UserIdentifier = null;
+            existing.UserIdentifier = string.Empty;
         }
 
         storeSession.Store(existing);

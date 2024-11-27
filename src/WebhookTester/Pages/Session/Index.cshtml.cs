@@ -22,14 +22,14 @@ public class IndexModel : PageModel
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
-    public WebhookSessionView NewSession { get; set; }
+    public WebhookSessionView? NewSession { get; set; } = default!;
 
     public async Task<IActionResult> OnGetAsync()
     {
         if (Id == default)
         {
             NewSession = await _sessionService.GetWebhookSession();
-            return RedirectToPage("/Session/Index", new { id = NewSession.WebhookSessionId });
+            return RedirectToPage("/Session/Index", new { id = NewSession?.WebhookSessionId });
         }
         else
         {
@@ -56,7 +56,7 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostSaveUserSessionAsync(bool save)
     {
-        IActionResult result = null;
+        IActionResult? result;
         if (Request.IsHtmx())
         {
             if (save)

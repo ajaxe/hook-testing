@@ -15,7 +15,7 @@ public class CallbackHandlerMiddleware
     {
         this.next = next;
         RouteTemplate routeTemplate = TemplateParser.Parse("/callback/{callbackId}");
-        this.routeMatcher = new TemplateMatcher(routeTemplate, null);
+        this.routeMatcher = new TemplateMatcher(routeTemplate, new RouteValueDictionary());
     }
     public async Task InvokeAsync(HttpContext context, ICallbackProcessor callbackProcessor)
     {

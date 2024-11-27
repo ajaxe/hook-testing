@@ -10,10 +10,7 @@ RUN dotnet publish -c Release -r linux-musl-x64 -o published --self-contained
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
 
-RUN apk add bash icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib curl
-
-RUN addgroup -S app \
-    && adduser -S app -G app
+RUN apk add bash icu-libs krb5-libs libgcc libintl libssl3 libstdc++ zlib curl
 
 WORKDIR /home/app/
 COPY --from=builder /home/app/published .

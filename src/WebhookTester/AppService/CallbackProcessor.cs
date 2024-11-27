@@ -41,7 +41,7 @@ internal class CallbackProcessor : ICallbackProcessor
 
         if (webhookSession is null)
         {
-            logger.LogInformation("Webhook session id: @WebhookSessionId does not exist, ignoring callback event",
+            logger.LogInformation("Webhook session id: {@WebhookSessionId} does not exist, ignoring callback event",
                 callback.WebhookSessionId);
             return;
         }

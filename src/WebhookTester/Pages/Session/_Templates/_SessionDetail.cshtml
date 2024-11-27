@@ -4,7 +4,7 @@
     <div class="card-body">
         <div class="card-title">
             <div class="h5 d-inline">Session details</div>
-            @if (User.Identity.IsAuthenticated)
+            @if (User.Identity?.IsAuthenticated == true)
             {
                 <partial name="_Templates/_SessionSaveStatus" model="@Model.IsAssignedToUser" />
             }

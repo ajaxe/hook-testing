@@ -10,9 +10,9 @@ public class UserInfoProvider : IUserInfoProvider
     {
         this._httpContextAccessor = httpContextAccessor;
     }
-    public UserProfile GetUserProfile()
+    public UserProfile? GetUserProfile()
     {
-        ClaimsPrincipal currentUser = _httpContextAccessor.HttpContext?.User;
+        ClaimsPrincipal? currentUser = _httpContextAccessor.HttpContext?.User;
         if (currentUser is null)
         {
             return null;

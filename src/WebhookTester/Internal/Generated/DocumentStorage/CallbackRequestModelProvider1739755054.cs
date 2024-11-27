@@ -30,33 +30,6 @@ namespace Marten.Generated.DocumentStorage
         }
 
 
-        public const string COMMAND_TEXT = "select public.mt_upsert_callbackrequestmodel(?, ?, ?, ?)";
-
-
-        public override string CommandText()
-        {
-            return COMMAND_TEXT;
-        }
-
-
-        public override NpgsqlTypes.NpgsqlDbType DbType()
-        {
-            return NpgsqlTypes.NpgsqlDbType.Uuid;
-        }
-
-
-        public override void ConfigureParameters(Npgsql.NpgsqlParameter[] parameters, ApogeeDev.WebhookTester.Common.Models.CallbackRequestModel document, Marten.Internal.IMartenSession session)
-        {
-            parameters[0].NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Jsonb;
-            parameters[0].Value = session.Serializer.ToJson(_document);
-            // .Net Class Type
-            parameters[1].NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Varchar;
-            parameters[1].Value = _document.GetType().FullName;
-            parameters[2].NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Uuid;
-            parameters[2].Value = document.Id;
-            setVersionParameter(parameters[3]);
-        }
-
 
         public override void Postprocess(System.Data.Common.DbDataReader reader, System.Collections.Generic.IList<System.Exception> exceptions)
         {
@@ -75,6 +48,26 @@ namespace Marten.Generated.DocumentStorage
         public override Marten.Internal.Operations.OperationRole Role()
         {
             return Marten.Internal.Operations.OperationRole.Upsert;
+        }
+
+
+        public override NpgsqlTypes.NpgsqlDbType DbType()
+        {
+            return NpgsqlTypes.NpgsqlDbType.Uuid;
+        }
+
+
+        public override void ConfigureParameters(Weasel.Postgresql.IGroupedParameterBuilder parameterBuilder, Weasel.Postgresql.ICommandBuilder builder, ApogeeDev.WebhookTester.Common.Models.CallbackRequestModel document, Marten.Internal.IMartenSession session)
+        {
+            builder.Append("select public.mt_upsert_callbackrequestmodel(");
+            var parameter0 = parameterBuilder.AppendParameter(session.Serializer.ToJson(_document));
+            parameter0.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Jsonb;
+            // .Net Class Type
+            var parameter1 = parameterBuilder.AppendParameter(_document.GetType().FullName);
+            parameter1.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Varchar;
+            var parameter2 = parameterBuilder.AppendParameter(document.Id);
+            setVersionParameter(parameterBuilder);
+            builder.Append(')');
         }
 
     }
@@ -99,33 +92,6 @@ namespace Marten.Generated.DocumentStorage
         }
 
 
-        public const string COMMAND_TEXT = "select public.mt_insert_callbackrequestmodel(?, ?, ?, ?)";
-
-
-        public override string CommandText()
-        {
-            return COMMAND_TEXT;
-        }
-
-
-        public override NpgsqlTypes.NpgsqlDbType DbType()
-        {
-            return NpgsqlTypes.NpgsqlDbType.Uuid;
-        }
-
-
-        public override void ConfigureParameters(Npgsql.NpgsqlParameter[] parameters, ApogeeDev.WebhookTester.Common.Models.CallbackRequestModel document, Marten.Internal.IMartenSession session)
-        {
-            parameters[0].NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Jsonb;
-            parameters[0].Value = session.Serializer.ToJson(_document);
-            // .Net Class Type
-            parameters[1].NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Varchar;
-            parameters[1].Value = _document.GetType().FullName;
-            parameters[2].NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Uuid;
-            parameters[2].Value = document.Id;
-            setVersionParameter(parameters[3]);
-        }
-
 
         public override void Postprocess(System.Data.Common.DbDataReader reader, System.Collections.Generic.IList<System.Exception> exceptions)
         {
@@ -144,6 +110,26 @@ namespace Marten.Generated.DocumentStorage
         public override Marten.Internal.Operations.OperationRole Role()
         {
             return Marten.Internal.Operations.OperationRole.Insert;
+        }
+
+
+        public override NpgsqlTypes.NpgsqlDbType DbType()
+        {
+            return NpgsqlTypes.NpgsqlDbType.Uuid;
+        }
+
+
+        public override void ConfigureParameters(Weasel.Postgresql.IGroupedParameterBuilder parameterBuilder, Weasel.Postgresql.ICommandBuilder builder, ApogeeDev.WebhookTester.Common.Models.CallbackRequestModel document, Marten.Internal.IMartenSession session)
+        {
+            builder.Append("select public.mt_insert_callbackrequestmodel(");
+            var parameter0 = parameterBuilder.AppendParameter(session.Serializer.ToJson(_document));
+            parameter0.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Jsonb;
+            // .Net Class Type
+            var parameter1 = parameterBuilder.AppendParameter(_document.GetType().FullName);
+            parameter1.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Varchar;
+            var parameter2 = parameterBuilder.AppendParameter(document.Id);
+            setVersionParameter(parameterBuilder);
+            builder.Append(')');
         }
 
     }
@@ -168,33 +154,6 @@ namespace Marten.Generated.DocumentStorage
         }
 
 
-        public const string COMMAND_TEXT = "select public.mt_update_callbackrequestmodel(?, ?, ?, ?)";
-
-
-        public override string CommandText()
-        {
-            return COMMAND_TEXT;
-        }
-
-
-        public override NpgsqlTypes.NpgsqlDbType DbType()
-        {
-            return NpgsqlTypes.NpgsqlDbType.Uuid;
-        }
-
-
-        public override void ConfigureParameters(Npgsql.NpgsqlParameter[] parameters, ApogeeDev.WebhookTester.Common.Models.CallbackRequestModel document, Marten.Internal.IMartenSession session)
-        {
-            parameters[0].NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Jsonb;
-            parameters[0].Value = session.Serializer.ToJson(_document);
-            // .Net Class Type
-            parameters[1].NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Varchar;
-            parameters[1].Value = _document.GetType().FullName;
-            parameters[2].NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Uuid;
-            parameters[2].Value = document.Id;
-            setVersionParameter(parameters[3]);
-        }
-
 
         public override void Postprocess(System.Data.Common.DbDataReader reader, System.Collections.Generic.IList<System.Exception> exceptions)
         {
@@ -213,6 +172,26 @@ namespace Marten.Generated.DocumentStorage
         public override Marten.Internal.Operations.OperationRole Role()
         {
             return Marten.Internal.Operations.OperationRole.Update;
+        }
+
+
+        public override NpgsqlTypes.NpgsqlDbType DbType()
+        {
+            return NpgsqlTypes.NpgsqlDbType.Uuid;
+        }
+
+
+        public override void ConfigureParameters(Weasel.Postgresql.IGroupedParameterBuilder parameterBuilder, Weasel.Postgresql.ICommandBuilder builder, ApogeeDev.WebhookTester.Common.Models.CallbackRequestModel document, Marten.Internal.IMartenSession session)
+        {
+            builder.Append("select public.mt_update_callbackrequestmodel(");
+            var parameter0 = parameterBuilder.AppendParameter(session.Serializer.ToJson(_document));
+            parameter0.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Jsonb;
+            // .Net Class Type
+            var parameter1 = parameterBuilder.AppendParameter(_document.GetType().FullName);
+            parameter1.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Varchar;
+            var parameter2 = parameterBuilder.AppendParameter(document.Id);
+            setVersionParameter(parameterBuilder);
+            builder.Append(')');
         }
 
     }
@@ -462,15 +441,15 @@ namespace Marten.Generated.DocumentStorage
         }
 
 
-        public override Npgsql.NpgsqlCommand BuildLoadCommand(System.Guid id, string tenant)
+        public override object RawIdentityValue(System.Guid id)
         {
-            return new NpgsqlCommand(_loaderSql).With("id", id);
+            return id;
         }
 
 
-        public override Npgsql.NpgsqlCommand BuildLoadManyCommand(System.Guid[] ids, string tenant)
+        public override Npgsql.NpgsqlParameter BuildManyIdParameter(System.Guid[] ids)
         {
-            return new NpgsqlCommand(_loadArraySql).With("ids", ids);
+            return base.BuildManyIdParameter(ids);
         }
 
     }
@@ -554,15 +533,15 @@ namespace Marten.Generated.DocumentStorage
         }
 
 
-        public override Npgsql.NpgsqlCommand BuildLoadCommand(System.Guid id, string tenant)
+        public override object RawIdentityValue(System.Guid id)
         {
-            return new NpgsqlCommand(_loaderSql).With("id", id);
+            return id;
         }
 
 
-        public override Npgsql.NpgsqlCommand BuildLoadManyCommand(System.Guid[] ids, string tenant)
+        public override Npgsql.NpgsqlParameter BuildManyIdParameter(System.Guid[] ids)
         {
-            return new NpgsqlCommand(_loadArraySql).With("ids", ids);
+            return base.BuildManyIdParameter(ids);
         }
 
     }
@@ -646,15 +625,15 @@ namespace Marten.Generated.DocumentStorage
         }
 
 
-        public override Npgsql.NpgsqlCommand BuildLoadCommand(System.Guid id, string tenant)
+        public override object RawIdentityValue(System.Guid id)
         {
-            return new NpgsqlCommand(_loaderSql).With("id", id);
+            return id;
         }
 
 
-        public override Npgsql.NpgsqlCommand BuildLoadManyCommand(System.Guid[] ids, string tenant)
+        public override Npgsql.NpgsqlParameter BuildManyIdParameter(System.Guid[] ids)
         {
-            return new NpgsqlCommand(_loadArraySql).With("ids", ids);
+            return base.BuildManyIdParameter(ids);
         }
 
     }
@@ -738,15 +717,15 @@ namespace Marten.Generated.DocumentStorage
         }
 
 
-        public override Npgsql.NpgsqlCommand BuildLoadCommand(System.Guid id, string tenant)
+        public override object RawIdentityValue(System.Guid id)
         {
-            return new NpgsqlCommand(_loaderSql).With("id", id);
+            return id;
         }
 
 
-        public override Npgsql.NpgsqlCommand BuildLoadManyCommand(System.Guid[] ids, string tenant)
+        public override Npgsql.NpgsqlParameter BuildManyIdParameter(System.Guid[] ids)
         {
-            return new NpgsqlCommand(_loadArraySql).With("ids", ids);
+            return base.BuildManyIdParameter(ids);
         }
 
     }
@@ -773,7 +752,25 @@ namespace Marten.Generated.DocumentStorage
 
         public const string OVERWRITE_SQL = "update public.mt_doc_callbackrequestmodel target SET data = source.data, mt_version = source.mt_version, mt_dotnet_type = source.mt_dotnet_type, mt_last_modified = transaction_timestamp() FROM mt_doc_callbackrequestmodel_temp source WHERE source.id = target.id";
 
-        public const string CREATE_TEMP_TABLE_FOR_COPYING_SQL = "create temporary table mt_doc_callbackrequestmodel_temp as select * from public.mt_doc_callbackrequestmodel limit 0";
+        public const string CREATE_TEMP_TABLE_FOR_COPYING_SQL = "create temporary table mt_doc_callbackrequestmodel_temp (like public.mt_doc_callbackrequestmodel including defaults)";
+
+
+        public override string CreateTempTableForCopying()
+        {
+            return CREATE_TEMP_TABLE_FOR_COPYING_SQL;
+        }
+
+
+        public override string CopyNewDocumentsFromTempTable()
+        {
+            return COPY_NEW_DOCUMENTS_SQL;
+        }
+
+
+        public override string OverwriteDuplicatesFromTempTable()
+        {
+            return OVERWRITE_SQL;
+        }
 
 
         public override void LoadRow(Npgsql.NpgsqlBinaryImporter writer, ApogeeDev.WebhookTester.Common.Models.CallbackRequestModel document, Marten.Storage.Tenant tenant, Marten.ISerializer serializer)
@@ -803,24 +800,6 @@ namespace Marten.Generated.DocumentStorage
         public override string TempLoaderSql()
         {
             return TEMP_LOADER_SQL;
-        }
-
-
-        public override string CreateTempTableForCopying()
-        {
-            return CREATE_TEMP_TABLE_FOR_COPYING_SQL;
-        }
-
-
-        public override string CopyNewDocumentsFromTempTable()
-        {
-            return COPY_NEW_DOCUMENTS_SQL;
-        }
-
-
-        public override string OverwriteDuplicatesFromTempTable()
-        {
-            return OVERWRITE_SQL;
         }
 
     }
